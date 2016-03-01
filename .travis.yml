@@ -1,0 +1,9 @@
+# openHAB-core travis.yml
+branches:
+  only:
+    - master
+
+language: java
+
+jdk:
+  - oraclejdk8
