@@ -19,6 +19,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collection;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +35,11 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.apache.commons.collections.Closure;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.smarthome.io.voice.tts.TTSService;
+import org.eclipse.smarthome.io.audio.AudioFormat;
+import org.eclipse.smarthome.io.audio.AudioSource;
+import org.eclipse.smarthome.io.voice.TTSException;
+import org.eclipse.smarthome.io.voice.TTSService;
+import org.eclipse.smarthome.io.voice.Voice;
 import org.openhab.core.compat1x.internal.CompatibilityActivator;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.scriptengine.action.ActionDoc;
@@ -157,13 +162,13 @@ public class Audio {
 
     /**
      * Says the given text..
-     * 
+     *
      * <p>
      * This method checks for registered TTS services. If there is a service
      * available for the current OS, this will be chosen. Otherwise, it
      * will pick a (the first) TTS service that is platform-independent.
      * </p>
-     * 
+     *
      * @param text the text to speak
      */
     @ActionDoc(text = "says a given text through the default TTS service")
@@ -173,13 +178,13 @@ public class Audio {
 
     /**
      * Text-to-speech with a given voice.
-     * 
+     *
      * <p>
      * This method checks for registered TTS services. If there is a service
      * available for the current OS, this will be chosen. Otherwise, it
      * will pick a (the first) TTS service that is platform-independent.
      * </p>
-     * 
+     *
      * @param text the text to speak
      * @param voice the name of the voice to use or null, if the default voice should be used
      */
@@ -190,13 +195,13 @@ public class Audio {
 
     /**
      * Text-to-speech with a given voice.
-     * 
+     *
      * <p>
      * This method checks for registered TTS services. If there is a service
      * available for the current OS, this will be chosen. Otherwise, it
      * will pick a (the first) TTS service that is platform-independent.
      * </p>
-     * 
+     *
      * @param text the text to speak
      * @param voice the name of the voice to use or null, if the default voice should be used
      * @param device the name of audio device to be used to play the audio or null, if the default output device should
@@ -211,7 +216,17 @@ public class Audio {
                 ttsService = getTTSService(CompatibilityActivator.getContext(), "any");
             }
             if (ttsService != null) {
-                ttsService.say(text.toString(), voice, device);
+                // ttsService.say (text.toString(), voice, device);
+                Set<Voice> voices = ttsService.getAvailableVoices();
+                Set<AudioFormat> audioFormats = ttsService.getSupportedFormats();
+                try {
+                    AudioSource audioSource = ttsService.synthesize(text.toString(), voices.iterator().next(),
+                            audioFormats.iterator().next());
+                    // TODO: Play audioSource on some apropos AudioSink
+                    System.out.println("Said: " + text);
+                } catch (TTSException e) {
+                    System.out.println("TTS service failure - tried to say: '" + text + "' error: " + e.getMessage());
+                }
             } else {
                 logger.error("No TTS service available - tried to say: {}", text);
             }
@@ -390,7 +405,7 @@ public class Audio {
     /**
      * Queries the OSGi service registry for a service that provides a TTS implementation
      * for a given platform.
-     * 
+     *
      * @param context the bundle context to access the OSGi service registry
      * @param os a valid osgi.os string value or "any" if service should be platform-independent
      * @return a service instance or null, if none could be found

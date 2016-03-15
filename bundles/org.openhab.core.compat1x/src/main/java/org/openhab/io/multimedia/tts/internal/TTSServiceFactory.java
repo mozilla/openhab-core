@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 public class TTSServiceFactory {
     private static final Logger logger = LoggerFactory.getLogger(TTSServiceFactory.class);
 
-    private Map<String, ServiceRegistration<org.eclipse.smarthome.io.voice.tts.TTSService>> delegates = new HashMap<>();
+    private Map<String, ServiceRegistration<org.eclipse.smarthome.io.voice.TTSService>> delegates = new HashMap<>();
     private BundleContext context;
 
     private Map<TTSService, Map> ttsServices = new HashMap<>();
@@ -42,7 +42,7 @@ public class TTSServiceFactory {
     }
 
     public void deactivate() {
-        for (ServiceRegistration<org.eclipse.smarthome.io.voice.tts.TTSService> serviceReg : delegates.values()) {
+        for (ServiceRegistration<org.eclipse.smarthome.io.voice.TTSService> serviceReg : delegates.values()) {
             serviceReg.unregister();
         }
         delegates.clear();
@@ -70,15 +70,15 @@ public class TTSServiceFactory {
             if (properties != null && properties.containsKey("os")) {
                 props.put("os", properties.get("os"));
             }
-            ServiceRegistration<org.eclipse.smarthome.io.voice.tts.TTSService> serviceReg = context
-                    .registerService(org.eclipse.smarthome.io.voice.tts.TTSService.class, service, props);
+            ServiceRegistration<org.eclipse.smarthome.io.voice.TTSService> serviceReg = context
+                    .registerService(org.eclipse.smarthome.io.voice.TTSService.class, service, props);
             delegates.put(ttsService.getClass().getName(), serviceReg);
         }
     }
 
     private void unregisterDelegateService(TTSService service) {
         if (delegates.containsKey(service.getClass().getName())) {
-            ServiceRegistration<org.eclipse.smarthome.io.voice.tts.TTSService> serviceReg = delegates
+            ServiceRegistration<org.eclipse.smarthome.io.voice.TTSService> serviceReg = delegates
                     .get(service.getClass().getName());
             delegates.remove(service.getClass().getName());
             serviceReg.unregister();

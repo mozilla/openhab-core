@@ -8,7 +8,13 @@
  */
 package org.openhab.io.multimedia.tts.internal;
 
-import org.eclipse.smarthome.io.voice.tts.TTSService;
+import java.util.Set;
+
+import org.eclipse.smarthome.io.audio.AudioFormat;
+import org.eclipse.smarthome.io.audio.AudioSource;
+import org.eclipse.smarthome.io.voice.TTSException;
+import org.eclipse.smarthome.io.voice.TTSService;
+import org.eclipse.smarthome.io.voice.Voice;
 
 /**
  * This class serves as a mapping from the "old" org.openhab namespace to the
@@ -25,9 +31,26 @@ public class TTSServiceDelegate implements TTSService {
         this.service = service;
     }
 
-    @Override
     public void say(String text, String voice, String outputDevice) {
         service.say(text, voice, outputDevice);
+    }
+
+    @Override
+    public Set<Voice> getAvailableVoices() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Set<AudioFormat> getSupportedFormats() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public AudioSource synthesize(String text, Voice voice, AudioFormat requestedFormat) throws TTSException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
