@@ -1,4 +1,4 @@
-# openHAB-core travis.yml
+# openHAB travis.yml
 branches:
   only:
     - master
@@ -7,9 +7,9 @@ language: java
 
 jdk:
   - oraclejdk8
-  
+
 deploy:
   provider: bintray
   file: descriptor.json
-  user: yglazko
-  key: a056771a462c6051c1074e7e6791dc951f1da36f
+  user: vaani
+  key: 315213b83b21bc121e7ff476148a598193db810b
