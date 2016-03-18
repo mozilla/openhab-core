@@ -11,7 +11,7 @@
         "labels": ["vaani", "openhab", "mozilla"],
         "public_download_numbers": false,
         "public_stats": false,
-        },
+        }
 
     "version": {
         "name": "0.1"
