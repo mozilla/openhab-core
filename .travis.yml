@@ -1,0 +1,10 @@
+# openHAB travis.yml
+branches:
+  only:
+    - vaani
+
+language: java
+
+jdk:
+  - oraclejdk8
+
