@@ -1,8 +1,8 @@
 install:
 - wget http://www-us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
 - tar xzf apache-maven-3.3.9-bin.tar.gz
-- curl -s -L https://github.com/mozilla/smarthome/releases/latest | egrep -o /mozilla/smarthome/releases/download/.*/m2repository_smarthome.tar.gz | wget --base=http://github.com/ -i -
-- tar xf m2repository_smarthome.tar.gz -C $HOME/.m2/repository/ 
+- curl -s -L https://github.com/mozilla/smarthome/releases/latest | egrep -o /mozilla/smarthome/releases/download/.*/m2repository.tar.gz | wget --base=http://github.com/ -i -
+- tar xf m2repository.tar.gz -C $HOME/.m2/repository/ 
 
 before_script:
 - rm $HOME/.m2/settings.xml
@@ -31,8 +31,6 @@ jdk:
 - openjdk8
 
 before_deploy:
-- tar zcfv $TRAVIS_BUILD_DIR/m2repository_openhab_core.tar.gz -C $HOME/.m2/repository org/openhab/core 2>&1 | $TRAVIS_BUILD_DIR/filter.py
-- rm -rf $HOME/.m2/repository/org/openhab/core
 - tar zcfv $TRAVIS_BUILD_DIR/m2repository.tar.gz -C $HOME/.m2/repository . 2>&1 | $TRAVIS_BUILD_DIR/filter.py
 
 deploy:
@@ -41,7 +39,6 @@ deploy:
     secure: k++dytlUEyWCKb4auCy7pG5Fc+3tiV0FQ0OkI1u3qCSb/O1l+NNvLajcXt2k/LS9OfLYP8I+w/IVf3QMiYMRHSS/J+xnlI8IEN2OQoDDR6wmIVjGcGyr9pfbbwOCR6bK9DR2dlY2lYCyRWJhIcSWhxDaoXqSJyMHYYNGeOEsCqJ3QmmDIQ9zM8Cgek6zQdllfJBdLSecaBhyDcYWC1ajR5oWZERld2K0wWJQXdOEHORX31vCs++z63MAgkJ0nuuSNDzd93n2j0WpLLYqFa4iK/kyQfe3FxI3Vr8McWyljWKmnHza+qpgMeNrEUYudt1QHqqceK1e3cXbjVHv7aHSGaly34g2urzr1nHR7S4YLLy/sw+RwNKSk9cTO5t1K+PWbZR/hroOtHLQeUKkzDkEV6ADgr+sfZv/XkQQg9R93YDr5X5LkkVjTLzQVOLGZVNRv9Bvm9TQgyU9IW71WL62mmZ7kTDyyPb8QwXlhFKFhnsbrnP/YSbxfcvmli7hnqN3id/iU2S/JcG+rT6RAn9+jf/Kbdi2M0gV/uWuXeWi7XzmnXqAGfT146Y8EIa2sgSQFX3zQiHrhngCBmAzPo4e3qCZWcHsCnbexcuqgI0CrCTNpo7eXOTTCBT4x0xN0DLL1E3Yix029Dz3kDO7LtEebjk9u71EsP5CgU3XXD7/W9U=
   file: 
   - m2repository.tar.gz
-  - m2repository_openhab_core.tar.gz
   - features/repo/target/org.openhab.repo-2.0.0-SNAPSHOT.zip
   skip_cleanup: true
   on:
