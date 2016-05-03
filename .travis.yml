@@ -1,8 +1,8 @@
 install:
 - wget http://www-us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
 - tar xzf apache-maven-3.3.9-bin.tar.gz
-- wget https://github.com/mozilla/smarthome/releases/download/latest/m2repository.tar.gz
-- tar xf m2repository.tar.gz -C $HOME/.m2/repository/ 
+- curl -s -L https://github.com/mozilla/smarthome/releases/latest | egrep -o /mozilla/smarthome/releases/download/.*/m2repository_smarthome.tar.gz | wget --base=http://github.com/ -i -
+- tar xf m2repository_smarthome.tar.gz -C $HOME/.m2/repository/ 
 
 before_script:
 - rm $HOME/.m2/settings.xml
@@ -21,8 +21,7 @@ sudo: required
 dist: trusty
 
 before_cache:
-- rm -rf $HOME/.m2/repository/org/eclipse/smarthome/eclipsesmarthome-incubation
-- rm -rf $HOME/.m2/repository/org/eclipse/smarthome/products
+- rm -rf $HOME/.m2/repository/org/openhab/core/features/org.openhab.repo
 
 cache:
   directories:
@@ -32,9 +31,6 @@ jdk:
 - openjdk8
 
 before_deploy:
-- rm -rf $HOME/.m2/repository/org/eclipse/smarthome/eclipsesmarthome-incubation
-- rm -rf $HOME/.m2/repository/org/eclipse/smarthome/products
-- rm -rf $HOME/.m2/repository/org/openhab/core/features/org.openhab.repo
 - OD=`pwd` && cd $HOME/.m2/repository && tar zcfv $OD/m2repository.tar.gz . 2>&1 | $OD/filter.py && cd $OD
 
 deploy:
