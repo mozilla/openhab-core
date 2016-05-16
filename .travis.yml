@@ -1,8 +1,13 @@
+language: java
+jdk: openjdk8
+sudo: required
+dist: trusty
+
 install:
 - wget http://www-us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
 - tar xzf apache-maven-3.3.9-bin.tar.gz
 - curl -s -L https://github.com/mozilla/smarthome/releases/latest | egrep -o /mozilla/smarthome/releases/download/.*/m2repository.tar.gz | wget --base=http://github.com/ -i -
-- tar xf m2repository.tar.gz -C $HOME/.m2/repository/ 
+- tar xf m2repository.tar.gz -C $HOME/.m2/repository/
 
 before_script:
 - rm $HOME/.m2/settings.xml
@@ -11,10 +16,6 @@ before_script:
 script:
 - MAVEN_SKIP_RC=true apache-maven-3.3.9/bin/mvn install -fae -B 2>&1 | ./filter.py ; test ${PIPESTATUS[0]} -eq 0
 
-sudo: required
-
-dist: trusty
-
 before_cache:
 - rm -rf $HOME/.m2/repository/org/openhab/core/features/org.openhab.repo
 
@@ -22,22 +23,18 @@ cache:
   directories:
   - $HOME/.m2
 
-jdk:
-- openjdk8
-
 before_deploy:
 - tar zcfv $TRAVIS_BUILD_DIR/m2repository.tar.gz -C $HOME/.m2/repository . 2>&1 | $TRAVIS_BUILD_DIR/filter.py
 
 deploy:
   provider: releases
   api_key:
-    secure: k++dytlUEyWCKb4auCy7pG5Fc+3tiV0FQ0OkI1u3qCSb/O1l+NNvLajcXt2k/LS9OfLYP8I+w/IVf3QMiYMRHSS/J+xnlI8IEN2OQoDDR6wmIVjGcGyr9pfbbwOCR6bK9DR2dlY2lYCyRWJhIcSWhxDaoXqSJyMHYYNGeOEsCqJ3QmmDIQ9zM8Cgek6zQdllfJBdLSecaBhyDcYWC1ajR5oWZERld2K0wWJQXdOEHORX31vCs++z63MAgkJ0nuuSNDzd93n2j0WpLLYqFa4iK/kyQfe3FxI3Vr8McWyljWKmnHza+qpgMeNrEUYudt1QHqqceK1e3cXbjVHv7aHSGaly34g2urzr1nHR7S4YLLy/sw+RwNKSk9cTO5t1K+PWbZR/hroOtHLQeUKkzDkEV6ADgr+sfZv/XkQQg9R93YDr5X5LkkVjTLzQVOLGZVNRv9Bvm9TQgyU9IW71WL62mmZ7kTDyyPb8QwXlhFKFhnsbrnP/YSbxfcvmli7hnqN3id/iU2S/JcG+rT6RAn9+jf/Kbdi2M0gV/uWuXeWi7XzmnXqAGfT146Y8EIa2sgSQFX3zQiHrhngCBmAzPo4e3qCZWcHsCnbexcuqgI0CrCTNpo7eXOTTCBT4x0xN0DLL1E3Yix029Dz3kDO7LtEebjk9u71EsP5CgU3XXD7/W9U=
-  file: 
+    secure: XmLCFnmzAZcH/PVfPAcwYwiIc0IKBnswQCM2hJEU+iY8g0nPeEubJOm8D3GGDzf243Y8nDjRqlQJw38+ltihfjcXmeti0eWDs3fq3El3fnjUNzRCsqxFbxDSWZE9d8+wnUHQbeMbbasFSX83oS9HN10jpXOarjMGNrG2qh9M/y+PwQqq+MYVzbp0oAC6gJeQbiUTwBgFBHWt5IZaXup5GxAcpWOh9ueOX2m2JL9V3y0Mh3PTDQhz62W+aIWdJvcWIJ45Cy/PFyjHiB3cT/QiYm6Ghzr5/7NfQLf2AKMejS/ss/tdJ0lE66xgVFfrqRf5zD4Zzdz6+jQpAa1Uatkm7G5fa2gkKlCtevSE069mWGhpg8eVozpT9DbUPhi+RO6tDFNEuHKHZVGjKgq3yrqU4M9NlUaH69js2VLXJqShfKZCx8yIHTdg2yKjhh0gKNBh9EMxyjDevwKJzdARnAB3g1L6UnhE7NHri9LGUMkZWnG4Axy6Qk/4XQFzR+m8fmdMPyFcsJ2fuxF/mOdRCybHrhQ1IqTArMitDBApnbgwJWzoNZAT61IgdashuVnenbvyY7j5EnRn1LeWQCBINvdagmRfttwQOvUb0Exfko3Oz+uPXB+ynqKye4Cfjgh5mitof2o7oW9RyRFfp9FZf5H7tOiRNSWUWNEjkT8V22ebCds=
+  file:
   - m2repository.tar.gz
   - features/repo/target/org.openhab.repo-2.0.0-SNAPSHOT.zip
   skip_cleanup: true
   on:
     repo: mozilla/openhab-core
-    branch: vaani
+    branch: master
     tags: true
-
